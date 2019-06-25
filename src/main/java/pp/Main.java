@@ -1,46 +1,47 @@
 package pp;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
 
-    List<String > fileNames;
-    List<Path> files;
+    private static List<String> fileNames = new ArrayList<>();
 
     public static void main(String[] args) {
         try {
+            //read list of files from the file txt
             BufferedReader bufferedReader = new BufferedReader(new FileReader("list.txt"));
-            String line
-
-            FileInputStream inputStream = null; //Создаем поток-чтения-байт-из-файла
-            inputStream = new FileInputStream("src/test/java/files/1.jpg");
-            FileOutputStream outputStream = new FileOutputStream("result.jpg");// Создаем поток-записи-байт-в-файл
-
-            byte[] buffer = new byte[1000];
-            while (inputStream.available() > 0) { //пока есть еще непрочитанные байты
-                int count = inputStream.read(buffer); // прочитать очередной блок байт в переменную buffer и реальное количество в count
-                outputStream.write(buffer, 0, count); //записать блок(часть блока) во второй поток
+            String line;
+            while ((line = bufferedReader.readLine()) != null){
+                fileNames.add(line.trim());
             }
-            inputStream.close(); //закрываем оба потока. Они больше не нужны.
+            bufferedReader.close();
+
+            FileInputStream inputStream = null;
+            FileOutputStream outputStream = null;
+            for (int i = 0; i < fileNames.size(); i++) {
+                inputStream = new FileInputStream(fileNames.get(i));
+                if (!Files.exists(Paths.get("result/"))) {
+                    Files.createDirectories(Paths.get("result/"));
+                }
+                outputStream = new FileOutputStream("result/" + fileNames.get(i));
+                byte[] buffer = new byte[1000];
+                while (inputStream.available() > 0) {
+                    int count = inputStream.read(buffer);
+                    outputStream.write(buffer, 0, count);
+                }
+            }
+            inputStream.close();
             outputStream.close();
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }
-//		BufferedReader reader;
-//		try {
-//			reader = new BufferedReader(new FileReader(
-//					"/Users/pankaj/Downloads/myfile.txt"));
-//			String line = reader.readLine();
-//			while (line != null) {
-//				System.out.println(line);
-//				// read next line
-//				line = reader.readLine();
-//			}
-//			reader.close();
