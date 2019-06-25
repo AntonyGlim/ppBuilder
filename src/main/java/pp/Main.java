@@ -21,6 +21,7 @@ public class Main {
             }
             bufferedReader.close();
 
+            //copy files
             FileInputStream inputStream = null;
             FileOutputStream outputStream = null;
             for (int i = 0; i < fileNames.size(); i++) {
